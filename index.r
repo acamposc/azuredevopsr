@@ -83,6 +83,7 @@ buckets <- gcs_list_buckets(gc_proj_id)
 buckets$name
 
 #proof access to bigquery
+#https://code.markedmondson.me/bigQueryR/
 bqr_list_projects()
 
 
@@ -97,3 +98,7 @@ gcs_upload(file = commits, bucket = buckets$name)
 
 #create table manually from gcs
 
+bqr_list_datasets(projectId = gc_proj_id)
+datasetId = bqr_list_datasets(projectId = gc_proj_id)
+bigquery_table <- bqr_list_tables(projectId = gc_proj_id, datasetId = "test_dataset")
+bigquery_table$id
