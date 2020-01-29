@@ -8,7 +8,13 @@ library(jsonlite)
 library(httr)
 library(xml2)
 library(usethis)
-library(plyr)
+library(dplyr)
+library(stringr)
+library(bigQueryR)
+#library(gargle)
+library(googleCloudStorageR)
+
+
 
 #credentials
 #https://rstats.wtf/r-startup.html
@@ -49,10 +55,45 @@ repo_resp <- GET(url = paste0(resp_body_repo_url, "/commits"), authenticate(user
 
 http_type(repo_resp)
 commits <- content(repo_resp)
-str(commits$value)
+#str(commits$value)
 
-author <- lapply(commits$value, "[", 'author')
-is.list(author)
-str(author)
-author <- lapply(author, '[', 1)
-author
+#https://stackoverflow.com/questions/36454638/how-can-i-convert-json-to-data-frame-in-r
+commits <- toJSON(commits$value)
+commits <- fromJSON(commits)
+#str(commits)
+
+
+#strsplit(unlist(commits$committer$date[1]), "T")
+
+#   test<-str_split_fixed(commits$committer$date, "T", 2)
+#   test
+#pending: binding cols from df to list format
+
+##############
+#google cloud authentication
+#https://gargle.r-lib.org/articles/get-api-credentials.html#service-account-token
+#http://code.markedmondson.me/googleCloudStorageR/articles/googleCloudStorageR.html#auto-authentication
+gsa_path <- Sys.getenv("GOOGLE_SERVICE_ACCOUNT_PATH")
+options(googleAuthR.scopes.selected = "https://www.googleapis.com/auth/cloud-platform")
+gcs_auth(gsa_path)
+
+#proof authentication works fine
+gc_proj_id <- Sys.getenv("GOOGLE_CLOUD_PROJECT_ID")
+buckets <- gcs_list_buckets(gc_proj_id)
+buckets$name
+
+#proof access to bigquery
+bqr_list_projects()
+
+
+dataset_id <- bqr_list_datasets(projectId = gc_proj_id)
+#create tables is pending due to lack of template_data. More info on: ?bqr_create_table
+#bqr_create_table(projectId = gc_proj_id, datasetId = dataset_id$id, tableId = paste0(org, "-", proj))
+
+#upload dataframe to google cloud storage as csv
+#http://code.markedmondson.me/googleCloudStorageR/reference/gcs_upload.html
+gcs_upload(file = commits, bucket = buckets$name)
+
+
+#create table manually from gcs
+
