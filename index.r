@@ -1,3 +1,6 @@
+#DEPRECATED
+#See map.r instead
+
 #https://github.com/acamposc/azuredevopsr
 
 #https://docs.microsoft.com/en-us/rest/api/azure/devops/build/resources/list?view=azure-devops-rest-5.1#uri-parameters
@@ -88,7 +91,7 @@ bqr_list_projects()
 
 
 dataset_id <- bqr_list_datasets(projectId = gc_proj_id)
-#create tables is pending due to lack of template_data. More info on: ?bqr_create_table
+#create tables pending due to lack of template_data. More info on: ?bqr_create_table
 #bqr_create_table(projectId = gc_proj_id, datasetId = dataset_id$id, tableId = paste0(org, "-", proj))
 
 #upload dataframe to google cloud storage as csv
