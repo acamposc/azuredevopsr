@@ -26,24 +26,18 @@ orgs <- list(
   org_attach = 'Attach'
   
 )
-str(orgs)
+
 
 ##########
 #https://adv-r.hadley.nz/functionals.html
-fn <- function(x){
-  print(x)
-}
 
-chrr<-map_chr(orgs, fn)
+
 ##########
 
 # List organization's projects
 # https://docs.microsoft.com/en-us/rest/api/azure/devops/core/projects/list?view=azure-devops-rest-5.1
 
 
-#url <- paste0("https://dev.azure.com/", org,"/_apis/projects?api-version=5.1")
-
-############
 #Fetch all projects within organizations
 fn <- function(x){
   if(!require(httr)){
