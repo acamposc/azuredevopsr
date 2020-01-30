@@ -14,7 +14,7 @@ az_pat <<- Sys.getenv("AZURE_PAT")
 
 orgs <- list(
   org_mi_movistar = 'AtmMiMovistar',
-  org_movistar_publica = 'AtmMovistar',
+  #org_movistar_publica = 'AtmMovistar',
   org_banco_falabella = 'AtmBancoFalabella',
   org_esan= 'AtmESAN',
   org_estilos = 'AtmEstilosPE',
@@ -66,8 +66,8 @@ az_dev_org_urls<-map(orgs, fn)
 # Set up content names
 org_count <- 1:length(az_dev_org_urls)
 fn_names <- function(x){
-  if(!require(purrr)){
-    stop("purrr not installed")
+  if(!require(jsonlite)){
+    stop("jsonlite not installed")
   } else {
     projs <- rawToChar(az_dev_org_urls[x][[1]]$content)
     projs_json <- fromJSON(projs)
@@ -122,8 +122,94 @@ fn_repos <- function(x, y){
 }
 
 #https://purrr.tidyverse.org/reference/map2.html
-az_dev_repos_urls <- map2(.x = rep(orgs, count_projs) , .y = unlist(repo_projs_list[[1]]), .f = fn_repos)
+#gsub() used to replace url whitespaces for the requests.
+az_dev_repos_urls <- map2(.x = rep(orgs, count_projs) , .y = gsub(" ", "%20", unlist(repo_projs_list[[1]])), .f = fn_repos)
 
 #typeof(az_dev_repos_urls)
+#str(az_dev_repos_urls)
 
-str(az_dev_repos_urls)
+
+############
+#extract repo id and request for the commits data
+
+length_az_repos_urls <- 1:length(az_dev_repos_urls)
+extract_repo_id <- function(x){
+  if(!require(jsonlite)){
+    stop("jsonlite not installed")
+  } else {
+    body <- rawToChar(az_dev_repos_urls[x][[1]]$content)
+    body <- fromJSON(body)
+    body <- body$value$url
+    
+  } 
+}
+
+proj_urls <- map(length_az_repos_urls, extract_repo_id)
+
+############
+
+# Retrieve commits and place them in memory.
+
+fn_retrieve_commits <- function(x){
+  if(!require(httr)){
+    stop("httr not installed")
+  } else {
+    GET(
+      paste0(
+        proj_urls[x], 
+        "/commits"
+      ),
+      authenticate(
+        user = az_pat,
+        password = az_pat
+      )
+    )
+  }
+}
+retrieve_commits <- map(length_az_repos_urls, fn_retrieve_commits)
+
+fn_commits <- function(x){
+  if(!require(jsonlite)){
+    stop("jsonlite not installed")
+  } else {
+    commits <- rawToChar(retrieve_commits[x][[1]]$content)
+    commits <- fromJSON(commits)
+    #commits <- commits[[x]]$value
+    #commits <- toJSON(commits)
+    #commits <- fromJSON(commits)
+  }
+}
+commits <- map(length_az_repos_urls, fn_commits)
+str(commits)
+
+
+
+# commits holds the values meant to be loaded in bigquery.
+############
+
+# Write a json object file in working directory.
+# Function has been disabled.
+
+fn_export_json <- function(){
+  if(!require(jsonlite)){
+    stop("jsonlite not installed")
+  } else {
+    export_json <- toJSON(commits)
+    write(export_json, "commits.json")
+    
+  }
+}
+
+# fn_export_json()
+
+############
+#fn_commits_dataframe creates a list of dataframes
+
+fn_commits_dataframe <- function(x){
+  commits <- commits[[x]]$value
+  commits <- toJSON(commits)
+  commits <- fromJSON(commits)
+}
+commits_value <- map(length_az_repos_urls, fn_commits_dataframe)
+
+
