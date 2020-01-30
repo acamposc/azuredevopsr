@@ -126,4 +126,4 @@ az_dev_repos_urls <- map2(.x = rep(orgs, count_projs) , .y = unlist(repo_projs_l
 
 #typeof(az_dev_repos_urls)
 
-#str(az_dev_repos_urls)
+str(az_dev_repos_urls)
