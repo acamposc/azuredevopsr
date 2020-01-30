@@ -180,7 +180,7 @@ fn_commits <- function(x){
   }
 }
 commits <- map(length_az_repos_urls, fn_commits)
-str(commits)
+#str(commits)
 
 
 
