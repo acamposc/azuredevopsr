@@ -4,7 +4,12 @@
 library(purrr)
 library(httr)
 library(jsonlite)
+library(dplyr)
+library(DBI)
 
+
+
+source('load.r')
 
 #Environment vars
 az_pat <<- Sys.getenv("AZURE_PAT")
@@ -212,4 +217,141 @@ fn_commits_dataframe <- function(x){
 }
 commits_value <- map(length_az_repos_urls, fn_commits_dataframe)
 
+
+##############
+# creating dataframes
+# bigquery::insert_upload_job only accepts dataframes
+
+# generate a list
+fn_df_commits_list <- function(x){
+  if(!is.list(commits_value)){
+    stop('commits_value is not a list!!!')
+  } else {
+    commits_json <- toJSON(commits_value[[x]])
+    commits_list <- fromJSON(commits_json)
+    
+  }
+}
+commits_list <- map(length_az_repos_urls,fn_df_commits_list)
+is.list(commits_list)
+length(commits_list)
+
+# reduce data
+fn_df_commits_dataframe <- function(x){
+  if(!require(dplyr)){
+    stop("dplyr not installed")
+  } else {
+    json_list1 <- toJSON(commits_list[[x]][3])
+    json_list1 <- fromJSON(commits_list[[x]][3])
+    json_list2 <- toJSON(commits_list[[x]][4])
+    json_list2 <- fromJSON(commits_list[[x]][4])
+    
+    commits_bind <- bind_cols(!!!
+        commits_list1[[x]][3],
+        commits_list2[[x]][4]
+      )
+    #commits_bind <- toJSON(commits_bind)
+    commits_comm <- commits_bind
+  
+  }
+}
+commits_comm <- map(length_az_repos_urls,fn_df_commits_dataframe)
+
+
+###########
+# set column names to the list
+fn_column_names <- function(x, y){
+  column_names <- c("commiter_name", "commiter_email", "commiter_date", "comment")
+  colnames(commits_comm[x]) <- column_names
+}
+column_names <- map( , fn_column_names)
+
+###########
+# upload data to bigquery
+# https://rdrr.io/cran/bigrquery/man/api-perform.html
+
+
+# bigquery fields
+# not using this yet.
+fields <- 
+  #bq_fields(
+  list(
+    #list(name = "commitId", type = "string"),
+    #list(name = "author_name", type = "string"),
+    #list(name = "author_email", type = "string"),
+    #list(name = "author_date", type = "timestamp"),
+    list(name = "committer_name", type = "string"),
+    list(name = "committer_email", type = "string"),
+    list(name = "committer_date", type = "timestamp"),
+    list(name = "comment", type = "string")
+    #list(name = "commentTruncated", type = "string"),
+    #list(name = "changeCounts_Add", type = "integer"),
+    #list(name = "changeCounts_Edit", type = "integer"),
+    #list(name = "changeCounts_Delete", type = "integer"),
+    #list(name = "url", type = "string"),
+    #list(name = "remoteUrl", type = "string")
+  )
+#)
+
+
+
+fn_upload_job <- function(x){
+  if(!require(bigrquery)){
+    stop('bigrquery not installed')
+  } else {
+
+    
+    bq_perform_upload(
+      x = "attach-commits.test_dataset.atmCommitsTest",
+      values = commits_comm[[x]],
+      fields = fields,
+      create_disposition = "CREATE_IF_NEEDED",
+      write_disposition = "WRITE_APPEND",
+      billing = gc_proj_id
+    )
+  }
+}
+# upload_job <- map_dfr(rep(orgs, count_projs), fn_upload_job)
+upload_job <- map(22, fn_upload_job)
+# creates an empty table in bigquery. 
+# :(
+
+
+####dbi
+
+# connection: https://rdrr.io/cran/bigrquery/man/bigquery.html
+# upload data: https://rdrr.io/cran/DBI/man/dbAppendTable.html 
+# connection: https://db.rstudio.com/databases/big-query/
+
+# DBI - Bigquery connection:
+
+fn_connect_to_bigquery <-function(){
+  con <<- DBI::dbConnect(
+    bigrquery::bigquery(),
+    project = gc_proj_id,
+    dataset = 'test_dataset',
+    billing = gc_proj_id
+  )
+}
+fn_connect_to_bigquery()
+# only once
+
+
+fn_dbi_upload_job <- function(x){
+  if(!require(DBI)){
+    stop('DBI not installed')
+  } else {
+    bq_tbl <-  DBI::dbListTables(conn = con)  
+    
+    DBI::dbWriteTable(
+     conn = con,
+     name = c(bq_tbl[-1]),
+     value = commits_comm[[22]],
+     overwrite = TRUE,
+     row.names = FALSE
+   )
+  }
+}
+#upload_job <- map_dfr(rep(orgs, count_projs), fn_upload_job)
+upload_dbi_job <- map(22, fn_dbi_upload_job)
 
