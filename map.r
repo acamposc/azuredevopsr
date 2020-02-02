@@ -6,8 +6,9 @@ library(httr)
 library(jsonlite)
 library(dplyr)
 library(DBI)
-
-
+library(RJSONIO)
+library(data.table)
+library(data.tree)
 
 source('load.r')
 
@@ -24,7 +25,7 @@ orgs <- list(
   org_esan= 'AtmESAN',
   org_estilos = 'AtmEstilosPE',
   org_incarail = 'AtmIncaRail',
-  org_mapfre_peru = 'AtmMapfre',
+  #org_mapfre_peru = 'AtmMapfre',
   org_royal = 'AtmRoyal',
   org_tls = 'AtmToulouse',
   org_ucal = 'AtmUCAL',
@@ -70,12 +71,12 @@ az_dev_org_urls<-map(orgs, fn)
 ############
 # Set up content names
 org_count <- 1:length(az_dev_org_urls)
-fn_names <- function(x){
+fn_names <- function(x,y){
   if(!require(jsonlite)){
     stop("jsonlite not installed")
   } else {
     projs <- rawToChar(az_dev_org_urls[x][[1]]$content)
-    projs_json <- fromJSON(projs)
+    projs_json <- jsonlite::fromJSON(projs)
     projs_json_names <- projs_json$value$name
     
   }}
@@ -143,7 +144,7 @@ extract_repo_id <- function(x){
     stop("jsonlite not installed")
   } else {
     body <- rawToChar(az_dev_repos_urls[x][[1]]$content)
-    body <- fromJSON(body)
+    body <- jsonlite::fromJSON(body)
     body <- body$value$url
     
   } 
@@ -178,10 +179,8 @@ fn_commits <- function(x){
     stop("jsonlite not installed")
   } else {
     commits <- rawToChar(retrieve_commits[x][[1]]$content)
-    commits <- fromJSON(commits)
-    #commits <- commits[[x]]$value
-    #commits <- toJSON(commits)
-    #commits <- fromJSON(commits)
+    commits <- jsonlite::fromJSON(commits)
+    commits 
   }
 }
 commits <- map(length_az_repos_urls, fn_commits)
@@ -192,79 +191,73 @@ commits <- map(length_az_repos_urls, fn_commits)
 # commits holds the values meant to be loaded in bigquery.
 ############
 
-# Write a json object file in working directory.
-# Function has been disabled.
-
-fn_export_json <- function(){
-  if(!require(jsonlite)){
-    stop("jsonlite not installed")
-  } else {
-    export_json <- toJSON(commits)
-    write(export_json, "commits.json")
-    
-  }
-}
-
-# fn_export_json()
-
 ############
 #fn_commits_dataframe creates a list of dataframes
 
 fn_commits_dataframe <- function(x){
   commits <- commits[[x]]$value
-  commits <- toJSON(commits)
-  commits <- fromJSON(commits)
+
 }
 commits_value <- map(length_az_repos_urls, fn_commits_dataframe)
 
-
 ##############
-# creating dataframes
-# bigquery::insert_upload_job only accepts dataframes
+# select columns and bind rows in order to have one big tibble.
+# https://stackoverflow.com/questions/5234117/how-to-drop-columns-by-name-in-a-data-frame
+# https://stackoverflow.com/questions/15059285/row-binding-a-set-of-data-sets
 
-# generate a list
-fn_df_commits_list <- function(x){
-  if(!is.list(commits_value)){
-    stop('commits_value is not a list!!!')
+desired_cols <- c("commitId", "author", "committer", "comment", "changeCounts", "url", "remoteUrl")
+fn_select_cols <- function(x){
+  selected_cols <- commits_value[[x]][,desired_cols]
+}
+commits_value <- map(length_az_repos_urls,fn_select_cols)
+
+
+# manipulate json
+# https://gist.github.com/gluc/5f780246d57897b57c6b
+
+fn_jsn_tbl <- function(x){
+  if(!require(data.tree)){
+    stop("data.tree not installed")
   } else {
-    commits_json <- toJSON(commits_value[[x]])
-    commits_list <- fromJSON(commits_json)
+    repos <- jsonlite::toJSON(commits_value)
+    repos <- jsonlite::fromJSON(repos, simplifyDataFrame = FALSE)
     
+    repos <- as.Node(repos)
+    #print(repos, 'commitId', 'date')
+
+    reposdf <- data.tree::ToDataFrameTable(x = repos,
+                                           'commitId',
+                                           'email',
+                                           'comment',
+                                           'Add', 'Edit', 'Delete',
+                                           'url', 'remoteUrl', 'date')
+    
+    # deduplicate, summarise rows and remove NAs.
+    # https://stackoverflow.com/questions/40820120/merging-two-rows-with-some-having-missing-values-in-r
+    
+    if(!require(dplyr)){
+      stop('dplyr not installed')
+    } else {
+      
+      reposdf <<- 
+        reposdf %>%
+        group_by(commitId, comment, url, remoteUrl) %>%
+        summarise(
+          email = max(email, na.rm = TRUE),
+          date = max(date, na.rm = TRUE),
+          Add = max(Add, na.rm = TRUE),
+          Edit = max(Edit, na.rm = TRUE),
+          Delete = max(Delete, na.rm = TRUE)
+        )
+    }
+    
+    #write.csv(reposdf, file = 'reposdf.csv')
   }
 }
-commits_list <- map(length_az_repos_urls,fn_df_commits_list)
-is.list(commits_list)
-length(commits_list)
-
-# reduce data
-fn_df_commits_dataframe <- function(x){
-  if(!require(dplyr)){
-    stop("dplyr not installed")
-  } else {
-    json_list1 <- toJSON(commits_list[[x]][3])
-    json_list1 <- fromJSON(commits_list[[x]][3])
-    json_list2 <- toJSON(commits_list[[x]][4])
-    json_list2 <- fromJSON(commits_list[[x]][4])
-    
-    commits_bind <- bind_cols(!!!
-        commits_list1[[x]][3],
-        commits_list2[[x]][4]
-      )
-    #commits_bind <- toJSON(commits_bind)
-    commits_comm <- commits_bind
-  
-  }
-}
-commits_comm <- map(length_az_repos_urls,fn_df_commits_dataframe)
+#jsn_tbl <- map(length_az_repos_urls, fn_jsn_tbl)
+fn_jsn_tbl()
 
 
-###########
-# set column names to the list
-fn_column_names <- function(x, y){
-  column_names <- c("commiter_name", "commiter_email", "commiter_date", "comment")
-  colnames(commits_comm[x]) <- column_names
-}
-column_names <- map( , fn_column_names)
 
 ###########
 # upload data to bigquery
@@ -276,82 +269,63 @@ column_names <- map( , fn_column_names)
 fields <- 
   #bq_fields(
   list(
-    #list(name = "commitId", type = "string"),
-    #list(name = "author_name", type = "string"),
-    #list(name = "author_email", type = "string"),
-    #list(name = "author_date", type = "timestamp"),
-    list(name = "committer_name", type = "string"),
-    list(name = "committer_email", type = "string"),
-    list(name = "committer_date", type = "timestamp"),
-    list(name = "comment", type = "string")
+    list(name = "commitId", type = "string"),
+    list(name = "email", type = "string"),
+    list(name = "comment", type = "string"),
+    list(name = "Add", type = "integer"),
+    list(name = "Edit", type = "integer"),
+    list(name = "Delete", type = "integer"),
+    list(name = "url", type = "string"),
+    list(name = "remoteUrl", type = "string"),
+    list(name = "date", type = "timestamp")
     #list(name = "commentTruncated", type = "string"),
-    #list(name = "changeCounts_Add", type = "integer"),
-    #list(name = "changeCounts_Edit", type = "integer"),
-    #list(name = "changeCounts_Delete", type = "integer"),
-    #list(name = "url", type = "string"),
-    #list(name = "remoteUrl", type = "string")
+
+
   )
 #)
 
+##############
+#create table, works like a charm.
 
+bq_proj_name <- gc_proj_id
+bq_dataset_name <- c("test_dataset")
+bq_tbl <- c("atmCommitsTest")
+bq_table_name <- paste0(
+  bq_proj_name,
+  ".",
+  bq_dataset_name,
+  ".",
+  bq_tbl
+)
 
-fn_upload_job <- function(x){
-  if(!require(bigrquery)){
-    stop('bigrquery not installed')
-  } else {
-
-    
-    bq_perform_upload(
-      x = "attach-commits.test_dataset.atmCommitsTest",
-      values = commits_comm[[x]],
-      fields = fields,
-      create_disposition = "CREATE_IF_NEEDED",
-      write_disposition = "WRITE_APPEND",
-      billing = gc_proj_id
-    )
-  }
-}
-# upload_job <- map_dfr(rep(orgs, count_projs), fn_upload_job)
-upload_job <- map(22, fn_upload_job)
-# creates an empty table in bigquery. 
-# :(
-
-
-####dbi
-
-# connection: https://rdrr.io/cran/bigrquery/man/bigquery.html
-# upload data: https://rdrr.io/cran/DBI/man/dbAppendTable.html 
-# connection: https://db.rstudio.com/databases/big-query/
-
-# DBI - Bigquery connection:
-
-fn_connect_to_bigquery <-function(){
-  con <<- DBI::dbConnect(
-    bigrquery::bigquery(),
-    project = gc_proj_id,
-    dataset = 'test_dataset',
-    billing = gc_proj_id
+fn_bq_table_create <- function(x){
+  bq_table_create(
+    x = x,
+    fields = as_bq_fields(fields)
   )
 }
-fn_connect_to_bigquery()
-# only once
+fn_bq_table_create(bq_table_name)
+##############
 
 
-fn_dbi_upload_job <- function(x){
-  if(!require(DBI)){
-    stop('DBI not installed')
+fn_bq_tbl_upload <- function(x){
+  if(!require(bigrquery)){
+    stop("bigrquery not installed")
   } else {
-    bq_tbl <-  DBI::dbListTables(conn = con)  
+    tb <- bq_table(
+      project = bq_proj_name,
+      dataset = bq_dataset_name,
+      table = bq_tbl
+    )
     
-    DBI::dbWriteTable(
-     conn = con,
-     name = c(bq_tbl[-1]),
-     value = commits_comm[[22]],
-     overwrite = TRUE,
-     row.names = FALSE
-   )
+    dfr <- reposdf
+    
+    bq_table_upload(tb, dfr)
+    
   }
+  
 }
-#upload_job <- map_dfr(rep(orgs, count_projs), fn_upload_job)
-upload_dbi_job <- map(22, fn_dbi_upload_job)
+tbl_upload <-  fn_bq_tbl_upload()
 
+##
+# next steps: review data in bigquery.
