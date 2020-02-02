@@ -265,11 +265,13 @@ fn_repos_org_proj <- function(){
     az_org <- remote_sep$V4
     az_proj <- remote_sep$V5
     
-    reposdf$org <<- az_org
-    reposdf$proj <<- az_proj
+    reposdf$org <- az_org
+    reposdf$proj <- az_proj
+    reposdf <<- reposdf
   }
 }
 
+fn_repos_org_proj()
 ###########
 # upload data to bigquery
 # https://rdrr.io/cran/bigrquery/man/api-perform.html
@@ -311,12 +313,19 @@ bq_table_name <- paste0(
   bq_tbl
 )
 
+
+
+
 fn_bq_table_create <- function(x){
+  if(bq_table_exists(bq_table_name)){
+    stop("bigquery table already exists")
+  } else {
+  
   bq_table_create(
     x = x,
     fields = as_bq_fields(fields)
   )
-}
+}}
 fn_bq_table_create(bq_table_name)
 ##############
 
