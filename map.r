@@ -257,7 +257,18 @@ fn_jsn_tbl <- function(x){
 #jsn_tbl <- map(length_az_repos_urls, fn_jsn_tbl)
 fn_jsn_tbl()
 
-
+fn_repos_org_proj <- function(){
+  if(!require(data.table)){
+    stop("data.table not installed")
+  } else {
+    remote_sep <- read.table(text = reposdf$remoteUrl, sep = "/", colClasses = "character")
+    az_org <- remote_sep$V4
+    az_proj <- remote_sep$V5
+    
+    reposdf$org <<- az_org
+    reposdf$proj <<- az_proj
+  }
+}
 
 ###########
 # upload data to bigquery
@@ -277,7 +288,9 @@ fields <-
     list(name = "Delete", type = "integer"),
     list(name = "url", type = "string"),
     list(name = "remoteUrl", type = "string"),
-    list(name = "date", type = "timestamp")
+    list(name = "date", type = "timestamp"),
+    list(name = "org", type = "string"),
+    list(name = "proj", type = "string")
     #list(name = "commentTruncated", type = "string"),
 
 
