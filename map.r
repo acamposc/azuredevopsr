@@ -8,7 +8,6 @@ library(purrr)
 library(httr)
 library(jsonlite)
 library(dplyr)
-library(DBI)
 library(RJSONIO)
 library(data.table)
 library(data.tree)
@@ -324,7 +323,7 @@ bq_table_name <- paste0(
 
 
 fn_bq_table_create <- function(x){
-  if(bq_table_exists(bq_table_name)){
+  if(bq_table_exists(x)){
     stop("bigquery table already exists")
   } else {
   
@@ -337,7 +336,7 @@ fn_bq_table_create(bq_table_name)
 ##############
 
 
-fn_bq_tbl_upload <- function(x){
+fn_bq_tbl_upload <- function(){
   if(!require(bigrquery)){
     stop("bigrquery not installed")
   } else {
