@@ -1,5 +1,6 @@
 steps:
-  - name: gcr.io/cloud-builders/gcloud
+  '':
+    name: gcr.io/cloud-builders/gcloud
     args:
       - kms
       - decrypt
@@ -14,7 +15,8 @@ steps:
       - --key
       - azure-devops-commits
     id: decrypt az_pat
-  - name: gcr.io/cloud-builders/gcloud
+  '':
+    name: gcr.io/cloud-builders/gcloud
     args:
       - kms
       - decrypt
@@ -29,7 +31,8 @@ steps:
       - --key
       - azure-devops-commits
     id: decrypt gc_proj_id
-  - name: gcr.io/cloud-builders/gcloud
+  '':
+    name: gcr.io/cloud-builders/gcloud
     args:
       - kms
       - decrypt
@@ -44,7 +47,8 @@ steps:
       - --key
       - azure-devops-commits
     id: decrypt gsa_path
-  - name: gcr.io/cloud-builders/gcloud
+  '':
+    name: gcr.io/cloud-builders/gcloud
     args:
       - kms
       - decrypt
@@ -59,7 +63,8 @@ steps:
       - --key
       - azure-devops-commits
     id: decrypt dataset_name
-  - name: gcr.io/cloud-builders/gcloud
+  '':
+    name: gcr.io/cloud-builders/gcloud
     args:
       - kms
       - decrypt
@@ -74,17 +79,16 @@ steps:
       - --key
       - azure-devops-commits
     id: decrypt table_name
-  - name: rocker/r-base
+  '':
+    name: rocker/r-base
     args:
       - Rscript
       - -e
-      - "install.packages(\n  c(\"googleCloudStorageR\",\n    \"gargle\",\n    \"bigrquery\",\n
-        \   \"tictoc\",\n    \"purrr\",\n    \"httr\",\n    \"jsonlite\",\n    \"dplyr\",\n
-        \   \"RJSONIO\",\n    \"data.table\",\n    \"data.tree\",\n    \"devtools\"\n
-        \   )\n) \n\n#library(devtools)\n#remotes::install_github(\"MarkEdmondson1234/googleCloudRunner\")\n\n#
-        go"
-  - name: rocker/r-base
+      - /packages.r
+  '':
+    name: rocker/r-base
     args:
       - Rscript
       - -e
-      - map.r
+      - /map.r
+  timeout: '1200'
