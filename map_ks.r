@@ -1,5 +1,5 @@
 
-AZURE_PAT <- read.table(file = "AZURE_PAT.txt")
+AZURE_PAT <- read.table(file = "/AZURE_PAT.txt")
 GOOGLE_CLOUD_PROJECT_ID <- read.table(file = "/GOOGLE_CLOUD_PROJECT_ID.txt")
 GOOGLE_BIGQUERY_TABLE_NAME <- read.table(file = "/GOOGLE_BIGQUERY_TABLE_NAME.txt")
 GOOGLE_BIGQUERY_DATASET_NAME <- read.table(file = "/GOOGLE_BIGQUERY_DATASET_NAME.TXT")
