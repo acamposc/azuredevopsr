@@ -1,6 +1,5 @@
 steps:
-  '':
-    name: gcr.io/cloud-builders/gcloud
+  - name: gcr.io/cloud-builders/gcloud
     args:
       - kms
       - decrypt
@@ -15,8 +14,7 @@ steps:
       - --key
       - azure-devops-commits
     id: decrypt az_pat
-  '':
-    name: gcr.io/cloud-builders/gcloud
+  - name: gcr.io/cloud-builders/gcloud
     args:
       - kms
       - decrypt
@@ -31,8 +29,7 @@ steps:
       - --key
       - azure-devops-commits
     id: decrypt gc_proj_id
-  '':
-    name: gcr.io/cloud-builders/gcloud
+  - name: gcr.io/cloud-builders/gcloud
     args:
       - kms
       - decrypt
@@ -47,8 +44,7 @@ steps:
       - --key
       - azure-devops-commits
     id: decrypt gsa_path
-  '':
-    name: gcr.io/cloud-builders/gcloud
+  - name: gcr.io/cloud-builders/gcloud
     args:
       - kms
       - decrypt
@@ -63,8 +59,7 @@ steps:
       - --key
       - azure-devops-commits
     id: decrypt dataset_name
-  '':
-    name: gcr.io/cloud-builders/gcloud
+  - name: gcr.io/cloud-builders/gcloud
     args:
       - kms
       - decrypt
@@ -79,4 +74,3 @@ steps:
       - --key
       - azure-devops-commits
     id: decrypt table_name
-  timeout: '1200'
