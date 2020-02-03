@@ -284,31 +284,9 @@ fn_repos_org_proj()
 
 
 # bigquery fields
-# not using this yet.
-fields2 <- 
-  #bq_fields(
-  list(
-    list(name = "commitId", type = "string"),    # description = "Azure Repos commit id"),
-    list(name = "email", type = "string"),       # description = "Committer email"),
-    list(name = "comment", type = "string"),     # description = "Comment"),
-    list(name = "Add", type = "integer"),        # description = "Commiter adds"),
-    list(name = "Edit", type = "integer"),       # description = "Committer edits"),
-    list(name = "Delete", type = "integer"),     # description = "Committer deletes"),
-    list(name = "url", type = "string"),         # description = "Repo API url"),
-    list(name = "remoteUrl", type = "string"),   # description = "Remote url"),
-    list(name = "date", type = "timestamp"),     # description = "Declares when a change has been made"),
-    list(name = "org", type = "string"),         # description = "Azure Repos organization id"),
-    list(name = "proj", type = "string"),        # description = "Azure Repos project id within a organization"),
-    list(name = "timestamp", type = "timestamp") # description = "Upload time, may be of use to max() this value to avoid duplicates")
-    #list(name = "commentTruncated", type = "string"),
-
-
-  )
-#)
-
 
 fields <- 
-  #bq_fields(
+  
   list(
     list(name = "commitId", type = "string",     description = "Azure Repos commit id"),
     list(name = "email", type = "string",        description = "Committer email"),
@@ -323,10 +301,8 @@ fields <-
     list(name = "proj", type = "string",         description = "Azure Repos project id within a organization"),
     list(name = "timestamp", type = "timestamp",  description = "Upload time, may be of use to max() this value to avoid duplicates")
     #list(name = "commentTruncated", type = "string"),
-    
-    
   )
-#)
+
 
 ##############
 #create table, works like a charm.
