@@ -1,4 +1,18 @@
 
+install.packages(
+  c("googleCloudStorageR",
+    "gargle",
+    "bigrquery",
+    "purrr",
+    "httr",
+    "jsonlite",
+    "dplyr",
+    "RJSONIO",
+    "data.table",
+    "data.tree",
+    "devtools"
+  )
+) 
 
 
 #Dependencies
