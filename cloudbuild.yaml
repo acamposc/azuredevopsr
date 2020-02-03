@@ -4,7 +4,7 @@ steps:
       - kms
       - decrypt
       - --ciphertext-file
-      - /AZURE_PAT.txt.enc
+      - AZURE_PAT.txt.enc
       - --plaintext-file
       - /AZURE_PAT.txt
       - --location
@@ -19,7 +19,7 @@ steps:
       - kms
       - decrypt
       - --ciphertext-file
-      - /GOOGLE_CLOUD_PROJECT_ID.txt.enc
+      - GOOGLE_CLOUD_PROJECT_ID.txt.enc
       - --plaintext-file
       - /GOOGLE_CLOUD_PROJECT_ID.txt
       - --location
@@ -34,7 +34,7 @@ steps:
       - kms
       - decrypt
       - --ciphertext-file
-      - /attach-commits-fa50e59d273d.json.enc
+      - attach-commits-fa50e59d273d.json.enc
       - --plaintext-file
       - /attach-commits-fa50e59d273d.json
       - --location
@@ -49,7 +49,7 @@ steps:
       - kms
       - decrypt
       - --ciphertext-file
-      - /GOOGLE_BIGQUERY_DATASET_NAME.TXT.enc
+      - GOOGLE_BIGQUERY_DATASET_NAME.TXT.enc
       - --plaintext-file
       - /GOOGLE_BIGQUERY_DATASET_NAME.TXT
       - --location
@@ -64,7 +64,7 @@ steps:
       - kms
       - decrypt
       - --ciphertext-file
-      - /GOOGLE_BIGQUERY_TABLE_NAME.txt.enc
+      - GOOGLE_BIGQUERY_TABLE_NAME.txt.enc
       - --plaintext-file
       - /GOOGLE_BIGQUERY_TABLE_NAME.txt
       - --location
