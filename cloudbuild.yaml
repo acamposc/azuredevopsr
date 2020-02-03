@@ -88,3 +88,4 @@ steps:
       - /map.r
     waitFor:
       - '-'
+timeout: 900s
