@@ -1,4 +1,7 @@
 
+
+library(tictoc)
+tic("step1")
 #Dependencies
 
 library(purrr)
@@ -267,6 +270,9 @@ fn_repos_org_proj <- function(){
     
     reposdf$org <- az_org
     reposdf$proj <- az_proj
+    op <- options(digits.secs = 6)
+    reposdf$timestamp <- Sys.time()
+    
     reposdf <<- reposdf
   }
 }
@@ -279,23 +285,46 @@ fn_repos_org_proj()
 
 # bigquery fields
 # not using this yet.
-fields <- 
+fields2 <- 
   #bq_fields(
   list(
-    list(name = "commitId", type = "string"),
-    list(name = "email", type = "string"),
-    list(name = "comment", type = "string"),
-    list(name = "Add", type = "integer"),
-    list(name = "Edit", type = "integer"),
-    list(name = "Delete", type = "integer"),
-    list(name = "url", type = "string"),
-    list(name = "remoteUrl", type = "string"),
-    list(name = "date", type = "timestamp"),
-    list(name = "org", type = "string"),
-    list(name = "proj", type = "string")
+    list(name = "commitId", type = "string"),    # description = "Azure Repos commit id"),
+    list(name = "email", type = "string"),       # description = "Committer email"),
+    list(name = "comment", type = "string"),     # description = "Comment"),
+    list(name = "Add", type = "integer"),        # description = "Commiter adds"),
+    list(name = "Edit", type = "integer"),       # description = "Committer edits"),
+    list(name = "Delete", type = "integer"),     # description = "Committer deletes"),
+    list(name = "url", type = "string"),         # description = "Repo API url"),
+    list(name = "remoteUrl", type = "string"),   # description = "Remote url"),
+    list(name = "date", type = "timestamp"),     # description = "Declares when a change has been made"),
+    list(name = "org", type = "string"),         # description = "Azure Repos organization id"),
+    list(name = "proj", type = "string"),        # description = "Azure Repos project id within a organization"),
+    list(name = "timestamp", type = "timestamp") # description = "Upload time, may be of use to max() this value to avoid duplicates")
     #list(name = "commentTruncated", type = "string"),
 
 
+  )
+#)
+
+
+fields <- 
+  #bq_fields(
+  list(
+    list(name = "commitId", type = "string",     description = "Azure Repos commit id"),
+    list(name = "email", type = "string",        description = "Committer email"),
+    list(name = "comment", type = "string",      description = "Comment"),
+    list(name = "Add", type = "integer",         description = "Commiter adds"),
+    list(name = "Edit", type = "integer",        description = "Committer edits"),
+    list(name = "Delete", type = "integer",      description = "Committer deletes"),
+    list(name = "url", type = "string",          description = "Repo API url"),
+    list(name = "remoteUrl", type = "string",    description = "Remote url"),
+    list(name = "date", type = "timestamp",      description = "Declares when a change has been made"),
+    list(name = "org", type = "string",          description = "Azure Repos organization id"),
+    list(name = "proj", type = "string",         description = "Azure Repos project id within a organization"),
+    list(name = "timestamp", type = "timestamp",  description = "Upload time, may be of use to max() this value to avoid duplicates")
+    #list(name = "commentTruncated", type = "string"),
+    
+    
   )
 #)
 
@@ -303,8 +332,8 @@ fields <-
 #create table, works like a charm.
 
 bq_proj_name <- gc_proj_id
-bq_dataset_name <- c("test_dataset")
-bq_tbl <- c("atmCommitsTest")
+bq_dataset_name <- Sys.getenv("GOOGLE_BIGQUERY_DATASET_NAME")
+bq_tbl <- Sys.getenv("GOOGLE_BIGQUERY_TABLE_NAME")
 bq_table_name <- paste0(
   bq_proj_name,
   ".",
@@ -351,3 +380,5 @@ tbl_upload <-  fn_bq_tbl_upload()
 
 ##
 # next steps: review data in bigquery.
+
+toc()
