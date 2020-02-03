@@ -13,7 +13,7 @@ steps:
       - attach-key-ring
       - --key
       - azure-devops-commits
-    id: decrypt az_pat
+    id: decrypt azure_pat
   - name: gcr.io/cloud-builders/gcloud
     args:
       - kms
@@ -74,3 +74,17 @@ steps:
       - --key
       - azure-devops-commits
     id: decrypt table_name
+  - name: rocker/r-base
+    args:
+      - Rscript
+      - -e
+      - /packages.r
+    waitFor:
+      - '-'
+  - name: rocker/r-base
+    args:
+      - Rscript
+      - -e
+      - /map.r
+    waitFor:
+      - '-'
