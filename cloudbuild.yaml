@@ -74,18 +74,18 @@ steps:
       - --key
       - azure-devops-commits
     id: decrypt table_name
-  - name: rocker/verse:3.3.1
+  - name: rocker/verse:3.6.1
     args:
       - Rscript
       - -e
-      - packages.r
+      - /packages.r
     waitFor:
       - '-'
-  - name: rocker/verse:3.3.1
+  - name: rocker/verse:3.6.1
     args:
       - Rscript
       - -e
-      - map.r
+      - /map.r
     waitFor:
       - '-'
 timeout: 900s
