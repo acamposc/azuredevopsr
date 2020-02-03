@@ -74,7 +74,7 @@ steps:
       - --key
       - azure-devops-commits
     id: decrypt table_name
-  - name: listar
+  - name: rocker/verse:3.6.1
     args:
       - ls
   - name: rocker/verse:3.6.1
