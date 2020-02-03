@@ -8,7 +8,7 @@ yaml <-
         cr_buildstep_decrypt(
           id = "decrypt azure_pat",
           cipher = "AZURE_PAT.txt.enc",
-          plain = "/AZURE_PAT.txt",
+          plain = "AZURE_PAT.txt",
           keyring = "attach-key-ring",
           key = "azure-devops-commits",
           location = "us-central1"
@@ -16,7 +16,7 @@ yaml <-
         cr_buildstep_decrypt(
           id = "decrypt gc_proj_id",
           cipher = "GOOGLE_CLOUD_PROJECT_ID.txt.enc",
-          plain = "/GOOGLE_CLOUD_PROJECT_ID.txt",
+          plain = "GOOGLE_CLOUD_PROJECT_ID.txt",
           keyring = "attach-key-ring",
           key = "azure-devops-commits",
           location = "us-central1"
@@ -24,7 +24,7 @@ yaml <-
         cr_buildstep_decrypt(
           id = "decrypt gsa_path",
           cipher = "attach-commits-fa50e59d273d.json.enc",
-          plain = "/attach-commits-fa50e59d273d.json",
+          plain = "attach-commits-fa50e59d273d.json",
           keyring = "attach-key-ring",
           key = "azure-devops-commits",
           location = "us-central1"
@@ -32,7 +32,7 @@ yaml <-
         cr_buildstep_decrypt(
           id = "decrypt dataset_name",
           cipher = "GOOGLE_BIGQUERY_DATASET_NAME.TXT.enc",
-          plain = "/GOOGLE_BIGQUERY_DATASET_NAME.TXT",
+          plain = "GOOGLE_BIGQUERY_DATASET_NAME.TXT",
           keyring = "attach-key-ring",
           key = "azure-devops-commits",
           location = "us-central1"
@@ -40,7 +40,7 @@ yaml <-
         cr_buildstep_decrypt(
           id = "decrypt table_name",
           cipher = "GOOGLE_BIGQUERY_TABLE_NAME.txt.enc",
-          plain = "/GOOGLE_BIGQUERY_TABLE_NAME.txt",
+          plain = "GOOGLE_BIGQUERY_TABLE_NAME.txt",
           keyring = "attach-key-ring",
           key = "azure-devops-commits",
           location = "us-central1"
