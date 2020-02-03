@@ -16,7 +16,7 @@ options(googleAuthR.scopes.selected = "https://www.googleapis.com/auth/cloud-pla
 gcs_auth(gsa_path)
 
 #proof authentication works fine
-gc_proj_id <- GOOGLE_CLOUD_PROJECT_ID$V1
+gc_proj_id <- GOOGLE_CLOUD_PROJECT_ID
 buckets <- gcs_list_buckets(gc_proj_id)
 buckets$name
 
