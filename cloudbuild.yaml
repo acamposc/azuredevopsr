@@ -91,4 +91,4 @@ steps:
       - Rscript
       - -e
       - /map.r
-  timeout: '1200'
+  timeout: '900'
