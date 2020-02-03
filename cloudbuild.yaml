@@ -78,14 +78,14 @@ steps:
     args:
       - Rscript
       - -e
-      - /packages.r
+      - /workspace/packages.r
     waitFor:
       - '-'
   - name: rocker/r-base
     args:
       - Rscript
       - -e
-      - /map.r
+      - /workspace/map.r
     waitFor:
       - '-'
 timeout: 900s
