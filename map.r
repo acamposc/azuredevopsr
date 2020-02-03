@@ -32,7 +32,7 @@ source('map_ks.r')
 source('load.r')
 
 #Environment vars
-az_pat <<- AZURE_PAT$V1
+az_pat <<- AZURE_PAT
 
 
 ##########
@@ -324,8 +324,8 @@ fields <-
 #create table, works like a charm.
 
 bq_proj_name <- gc_proj_id
-bq_dataset_name <- GOOGLE_BIGQUERY_DATASET_NAME$V1
-bq_tbl <- GOOGLE_BIGQUERY_TABLE_NAME$V1
+bq_dataset_name <- GOOGLE_BIGQUERY_DATASET_NAME
+bq_tbl <- GOOGLE_BIGQUERY_TABLE_NAME
 bq_table_name <- paste0(
   bq_proj_name,
   ".",
