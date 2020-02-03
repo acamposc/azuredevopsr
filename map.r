@@ -10,7 +10,8 @@ install.packages(
     "RJSONIO",
     "data.table",
     "data.tree",
-    "devtools"
+    "devtools",
+    "readr"
   )
 ) 
 
@@ -24,6 +25,7 @@ library(dplyr)
 library(RJSONIO)
 library(data.table)
 library(data.tree)
+library(readr)
 
 
 source('map_ks.r')
