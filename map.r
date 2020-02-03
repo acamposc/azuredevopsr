@@ -1,7 +1,6 @@
 
 
-library(tictoc)
-tic("step1")
+
 #Dependencies
 
 library(purrr)
@@ -357,5 +356,3 @@ tbl_upload <-  fn_bq_tbl_upload()
 
 ##
 # next steps: review data in bigquery.
-
-toc()

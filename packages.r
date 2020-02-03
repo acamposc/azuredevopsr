@@ -2,7 +2,6 @@ install.packages(
   c("googleCloudStorageR",
     "gargle",
     "bigrquery",
-    "tictoc",
     "purrr",
     "httr",
     "jsonlite",
