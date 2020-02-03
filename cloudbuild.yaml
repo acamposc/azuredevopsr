@@ -76,16 +76,13 @@ steps:
     id: decrypt table_name
   - name: rocker/r-ver:3.6.1
     args:
-      - Rscript
-      - -e
-      - "packages.r"
+      - source('packages.r')
     waitFor:
       - '-'
   - name: rocker/r-ver:3.6.1
     args:
-      - Rscript
-      - -e
-      - "map.r"
+      - source('map.r')
+
     waitFor:
       - '-'
 timeout: 900s
