@@ -46,18 +46,11 @@ yaml <-
           location = "us-central1"
         ),
         cr_buildstep_r(
-          r = "packages.r",
-          name = "rocker/verse:3.6.1",
-          r_source = c("runtime"),
-          #prefix = "rocker/",
-          waitFor = c("-")
-        ),
-        cr_buildstep_r(
           r = "map.r",
           name = "rocker/verse:3.6.1",
           r_source = c("runtime"),
           #prefix = "rocker/",
-          waitFor = c("-")
+          waitFor = c("decrypt gsa_path")
         )
       ), 
       timeout = 900

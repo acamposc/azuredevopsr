@@ -77,15 +77,7 @@ steps:
   - name: rocker/verse:3.6.1
     args:
       - Rscript
-
-      - packages.r
-    waitFor:
-      - '-'
-  - name: rocker/verse:3.6.1
-    args:
-      - Rscript
-
       - map.r
     waitFor:
-      - '-'
+      - decrypt gsa_path
 timeout: 900s
