@@ -388,7 +388,7 @@ fn_bq_perform_upload <- function(x){
       x = tb, 
       values = dfr,
       create_disposition = c("CREATE_IF_NEEDED"),
-      write_disposition = c("WRITE_APEND")
+      write_disposition = c("WRITE_APPEND")
     )
     
   }
