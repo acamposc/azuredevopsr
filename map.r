@@ -352,7 +352,7 @@ fn_bq_table_create <- function(x){
 ##############
 
 
-fn_bq_tbl_upload_<- function(){
+fn_bq_tbl_upload<- function(){
   if(!require(bigrquery)){
     stop('bigrquery not in env')
   } else {
@@ -369,6 +369,6 @@ fn_bq_tbl_upload_<- function(){
   }
   
 }
- tbl_upload <-  fn_bq_tbl_upload()
+ tbl_upload <- fn_bq_tbl_upload()
 ##
 # next steps: review data in bigquery.
