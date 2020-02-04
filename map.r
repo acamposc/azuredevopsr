@@ -378,13 +378,13 @@ fn_bq_perform_upload <- function(x){
   if(!require(bigrquery)){
     stop("bigrquery not installed")
   } else {
-    dfr <- reposdf
+    dfr <- x
     tb <- bq_table(
       project = bq_proj_name,
       dataset = bq_dataset_name,
       table = bq_tbl
     )
-    job <- bq_perform_upload(
+    bq_perform_upload(
       x = tb, 
       values = dfr,
       create_disposition = c("CREATE_IF_NEEDED"),
@@ -393,3 +393,4 @@ fn_bq_perform_upload <- function(x){
     
   }
 }
+fn_bq_perform_upload(reposdf)
