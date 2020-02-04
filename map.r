@@ -338,25 +338,21 @@ bq_table_name <- paste0(
 
 
 fn_bq_table_create <- function(x){
-  #if(bq_table_exists(x)){
-  print("bigquery table already exists")
-  # } else {
+  if(bq_table_exists(x)){
+  print("bigquery table already exists)
+  } else {
   
-  tbl_upload <-  fn_bq_tbl_upload()
-  print("uploading table")
-
-
   bq_table_create(
     x = x,
     fields = as_bq_fields(fields)
   )
 #}
 }
-fn_bq_table_create(bq_table_name)
+#fn_bq_table_create(bq_table_name)
 ##############
 
 
-fn_bq_tbl_upload <- function(){
+fn_bq_tbl_upload_<- function(){
   if(!require(bigrquery)){
     stop("bigrquery not installed")
   } else {
@@ -373,6 +369,6 @@ fn_bq_tbl_upload <- function(){
   }
   
 }
-
+ tbl_upload <-  fn_bq_tbl_upload()
 ##
 # next steps: review data in bigquery.
