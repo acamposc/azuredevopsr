@@ -331,7 +331,9 @@ bq_table_name <- paste0(
   ".",
   bq_dataset_name,
   ".",
-  bq_tbl
+  bq_tbl,
+  "_",
+  Sys.Date
 )
 
 
@@ -348,7 +350,7 @@ fn_bq_table_create <- function(x){
   )
  }
 }
-#fn_bq_table_create(bq_table_name)
+fn_bq_table_create(bq_table_name)
 ##############
 
 
