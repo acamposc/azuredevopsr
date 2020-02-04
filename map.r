@@ -354,7 +354,7 @@ fn_bq_table_create <- function(x){
 
 fn_bq_tbl_upload_<- function(){
   if(!require(bigrquery)){
-    stop("bigrquery not installed")
+    stop('bigrquery not in env')
   } else {
     tb <- bq_table(
       project = bq_proj_name,
