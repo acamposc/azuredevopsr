@@ -287,7 +287,7 @@ fn_repos_org_proj <- function(){
     reposdf$org <- az_org
     reposdf$proj <- az_proj
     op <- options(digits.secs = 6)
-    reposdf$timestamp <- Sys.time()
+    reposdf$tstamp <- Sys.time()
     
     reposdf <<- reposdf
   }
@@ -315,7 +315,7 @@ fields <-
     list(name = "date", type = "timestamp",      description = "Declares when a change has been made"),
     list(name = "org", type = "string",          description = "Azure Repos organization id"),
     list(name = "proj", type = "string",         description = "Azure Repos project id within a organization"),
-    list(name = "timestamp", type = "timestamp",  description = "Upload time, may be of use to max() this value to avoid duplicates")
+    list(name = "tstamp", type = "timestamp",    description = "Upload time, may be of use to max() this value to avoid duplicates")
     #list(name = "commentTruncated", type = "string"),
   )
 
