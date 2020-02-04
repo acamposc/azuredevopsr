@@ -331,9 +331,7 @@ bq_table_name <- paste0(
   ".",
   bq_dataset_name,
   ".",
-  bq_tbl,
-  "_",
-  Sys.Date
+  bq_tbl
 )
 
 
@@ -371,6 +369,27 @@ fn_bq_tbl_upload<- function(){
   }
   
 }
- tbl_upload <- fn_bq_tbl_upload()
+# tbl_upload <- fn_bq_tbl_upload()
 ##
 # next steps: review data in bigquery.
+ 
+ 
+fn_bq_perform_upload <- function(x){
+  if(!require(bigrquery)){
+    stop("bigrquery not installed")
+  } else {
+    dfr <- reposdf
+    tb <- bq_table(
+      project = bq_proj_name,
+      dataset = bq_dataset_name,
+      table = bq_tbl
+    )
+    job <- bq_perform_upload(
+      x = tb, 
+      values = dfr,
+      create_disposition = c("CREATE_IF_NEEDED"),
+      write_disposition = c("WRITE_APEND")
+    )
+    
+  }
+}
