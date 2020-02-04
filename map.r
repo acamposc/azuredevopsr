@@ -352,27 +352,6 @@ fn_bq_table_create(bq_table_name)
 ##############
 
 
-fn_bq_tbl_upload<- function(){
-  if(!require(bigrquery)){
-    stop('bigrquery not in env')
-  } else {
-    tb <- bq_table(
-      project = bq_proj_name,
-      dataset = bq_dataset_name,
-      table = bq_tbl
-    )
-    
-    dfr <- reposdf
-    
-    bq_table_upload(tb, dfr)
-    
-  }
-  
-}
-# tbl_upload <- fn_bq_tbl_upload()
-##
-# next steps: review data in bigquery.
- 
  
 fn_bq_perform_upload <- function(x){
   if(!require(bigrquery)){
