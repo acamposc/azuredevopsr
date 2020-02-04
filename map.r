@@ -339,7 +339,7 @@ bq_table_name <- paste0(
 
 fn_bq_table_create <- function(x){
   if(bq_table_exists(x)){
-  print("bigquery table already exists)
+  print("bigquery table already exists")
   } else {
   
   bq_table_create(
