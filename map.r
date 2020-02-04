@@ -394,3 +394,4 @@ fn_bq_perform_upload <- function(x){
   }
 }
 fn_bq_perform_upload(reposdf)
+print("bq_perform_upload suceeded!!!!")
