@@ -346,7 +346,7 @@ fn_bq_table_create <- function(x){
     x = x,
     fields = as_bq_fields(fields)
   )
-#}
+ }
 }
 #fn_bq_table_create(bq_table_name)
 ##############
