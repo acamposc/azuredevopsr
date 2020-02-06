@@ -183,7 +183,7 @@ fn_retrieve_commits <- function(x){
       paste0(
         proj_urls[x], 
         "/commits",
-        "?searchCriteria.fromDate=",
+        "?searchCriteria.toDate=",
         as.character(Sys.Date()-1)
       ),
       authenticate(
@@ -321,7 +321,7 @@ fields <-
     list(name = "Delete", type = "integer",      description = "Committer deletes"),
     list(name = "url", type = "string",          description = "Repo API url"),
     list(name = "remoteUrl", type = "string",    description = "Remote url"),
-    list(name = "date", type = "timestamp",      description = "Declares when a change has been made"),
+    list(name = "date", type = "timestamp",      description = "Date when a change has been made"),
     list(name = "org", type = "string",          description = "Azure Repos organization id"),
     list(name = "proj", type = "string",         description = "Azure Repos project id within a organization"),
     list(name = "tstamp", type = "timestamp",    description = "Upload time, may be of use to max() this value to avoid duplicates")
