@@ -223,7 +223,7 @@ commits_value <- map(length_az_repos_urls, fn_commits_dataframe)
 
 commits_value <- commits_value[lengths(commits_value) > 0]
 
-length_az_repos_urls_new <- length(commits_value)
+length_az_repos_urls_new <- 1:length(commits_value)
 
 
 
