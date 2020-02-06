@@ -33,7 +33,7 @@ source('load.r')
 
 #Environment vars
 az_pat <<- AZURE_PAT
-
+#az_pat <- Sys.getenv("AZURE_PAT")
 
 ##########
 
@@ -182,7 +182,9 @@ fn_retrieve_commits <- function(x){
     GET(
       paste0(
         proj_urls[x], 
-        "/commits"
+        "/commits"#,
+        #"?searchCriteria.fromDate=",
+        #as.character(Sys.Date()-2)
       ),
       authenticate(
         user = az_pat,
@@ -205,8 +207,6 @@ fn_commits <- function(x){
 commits <- map(length_az_repos_urls, fn_commits)
 #str(commits)
 
-
-
 # commits holds the values meant to be loaded in bigquery.
 ############
 
@@ -219,6 +219,15 @@ fn_commits_dataframe <- function(x){
 }
 commits_value <- map(length_az_repos_urls, fn_commits_dataframe)
 
+#remove empty list objects
+
+commits_value <- commits_value[lengths(commits_value) > 0]
+
+length_az_repos_urls_new <- length(commits_value)
+
+
+
+
 ##############
 # select columns and bind rows in order to have one big tibble.
 # https://stackoverflow.com/questions/5234117/how-to-drop-columns-by-name-in-a-data-frame
@@ -228,7 +237,7 @@ desired_cols <- c("commitId", "author", "committer", "comment", "changeCounts", 
 fn_select_cols <- function(x){
   selected_cols <- commits_value[[x]][,desired_cols]
 }
-commits_value <- map(length_az_repos_urls,fn_select_cols)
+commits_value <- map(length_az_repos_urls_new,fn_select_cols)
 
 
 # manipulate json
