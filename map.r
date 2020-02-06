@@ -183,8 +183,8 @@ fn_retrieve_commits <- function(x){
       paste0(
         proj_urls[x], 
         "/commits",
-        "?searchCriteria.toDate=",
-        as.character(Sys.Date()-2)
+        "?searchCriteria.fromDate=",
+        as.character(Sys.Date()-1)
       ),
       authenticate(
         user = az_pat,
