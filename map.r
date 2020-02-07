@@ -39,7 +39,7 @@ az_pat <<- AZURE_PAT
 
 orgs <- list(
   org_mi_movistar = 'AtmMiMovistar',
-  #org_movistar_publica = 'AtmMovistar',
+  org_movistar_publica = 'AtmMovistar',
   org_banco_falabella = 'AtmBancoFalabella',
   org_esan= 'AtmESAN',
   org_estilos = 'AtmEstilosPE',
@@ -183,7 +183,7 @@ fn_retrieve_commits <- function(x){
       paste0(
         proj_urls[x], 
         "/commits",
-        "?searchCriteria.fromDate=",
+        "?searchCriteria.toDate=",
         as.character(Sys.Date()-1)
       ),
       authenticate(
