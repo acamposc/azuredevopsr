@@ -4,9 +4,9 @@ steps:
       - kms
       - decrypt
       - --ciphertext-file
-      - AZURE_PAT.txt.enc
+      - AZURE_PAT_PROD.txt.enc
       - --plaintext-file
-      - AZURE_PAT.txt
+      - AZURE_PAT_PROD.txt
       - --location
       - us-central1
       - --keyring

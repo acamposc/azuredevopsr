@@ -1,3 +1,6 @@
+print("beginning custom code!!!!")
+
+print("beginning installing packages!!!!")
 
 install.packages(
   c("googleCloudStorageR",
@@ -15,7 +18,7 @@ install.packages(
   )
 ) 
 
-
+print("loading dependencies!!!!")
 #Dependencies
 
 library(purrr)
@@ -31,8 +34,10 @@ library(readr)
 source('map_ks.r')
 source('load.r')
 
+print("the magic begins now!!!!")
+
 #Environment vars
-az_pat <<- AZURE_PAT
+az_pat <<- AZURE_PAT_PROD
 #az_pat <- Sys.getenv("AZURE_PAT")
 
 ##########
@@ -85,7 +90,7 @@ az_dev_org_urls<-map(orgs, fn)
 #str(az_dev_org_urls)
 ############
 
-
+print("request 1 done!!!!")
 
 ############
 # Set up content names
@@ -153,6 +158,8 @@ az_dev_repos_urls <- map2(.x = rep(orgs, count_projs) , .y = gsub(" ", "%20", un
 #typeof(az_dev_repos_urls)
 #str(az_dev_repos_urls)
 
+print("request 2 done!!!!")
+
 
 ############
 #extract repo id and request for the commits data
@@ -194,6 +201,10 @@ fn_retrieve_commits <- function(x){
   }
 }
 retrieve_commits <- map(length_az_repos_urls, fn_retrieve_commits)
+
+
+print("request 3 done!!!!")
+
 
 fn_commits <- function(x){
   if(!require(jsonlite)){
@@ -306,6 +317,9 @@ fn_repos_org_proj()
 ###########
 # upload data to bigquery
 # https://rdrr.io/cran/bigrquery/man/api-perform.html
+
+
+print("data transformation process done!!!!")
 
 
 # bigquery fields
