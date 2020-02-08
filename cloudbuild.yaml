@@ -13,7 +13,7 @@ steps:
       - attach-key-ring
       - --key
       - azure-devops-commits
-    id: decrypt azure_pat
+    id: decrypt azure_pat_prod
   - name: gcr.io/cloud-builders/gcloud
     args:
       - kms

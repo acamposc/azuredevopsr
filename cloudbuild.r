@@ -6,9 +6,9 @@ yaml <-
     cr_build_yaml(
       steps = c(
         cr_buildstep_decrypt(
-          id = "decrypt azure_pat",
-          cipher = "AZURE_PAT.txt.enc",
-          plain = "AZURE_PAT.txt",
+          id = "decrypt azure_pat_prod",
+          cipher = "AZURE_PAT_PROD.txt.enc",
+          plain = "AZURE_PAT_PROD.txt",
           keyring = "attach-key-ring",
           key = "azure-devops-commits",
           location = "us-central1"
