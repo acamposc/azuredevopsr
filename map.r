@@ -37,8 +37,13 @@ source('load.r')
 print("the magic begins now!!!!")
 
 #Environment vars
-az_pat <<- AZURE_PAT_PROD
+#az_pat <<- AZURE_PAT_PROD
 #az_pat <- Sys.getenv("AZURE_PAT")
+
+# test tkn
+#az_pat <- "hsadvlgkqn2r7k2k3nvvou4v66wct6bluqh3sfkttsf6ylba6ffa"
+# tokn francisco
+az_pat <- "vn4glf43avuehtspv7ckgj4ttpam7xjguzurtd3jibsdb5ubh35q"
 
 ##########
 
@@ -191,7 +196,7 @@ fn_retrieve_commits <- function(x){
         proj_urls[x], 
         "/commits",
         "?searchCriteria.toDate=",
-        as.character(Sys.Date()-2)
+        as.character(Sys.Date()-1)
       ),
       authenticate(
         user = az_pat,
